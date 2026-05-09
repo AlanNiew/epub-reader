@@ -756,12 +756,12 @@ class EPUBReader(QMainWindow):
         for fp in self.recent_files:
             if not os.path.isfile(fp):
                 continue
-            if fp not in self.books_meta:
+            meta = self.books_meta.get(fp)
+            if not meta or meta.get('cover') is None:
                 meta = extract_epub_meta(fp)
-                cover = extract_epub_cover(fp)
-                meta['cover'] = cover
+                meta['cover'] = extract_epub_cover(fp)
                 self.books_meta[fp] = meta
-            valid[fp] = self.books_meta[fp]
+            valid[fp] = meta
         self.books_meta = valid
         self.bookshelf.refresh(valid, self._get_progress_pct)
 
