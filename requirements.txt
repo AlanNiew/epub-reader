@@ -1,0 +1,5 @@
+PyQt5>=5.15.0
+PyQt5-sip>=12.8.0
+ebooklib>=0.18
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
