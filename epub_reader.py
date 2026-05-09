@@ -400,6 +400,8 @@ class EPUBReader(QMainWindow):
         self.book_file_path = ''
         self.is_immersive = False
         self._search_dialog = None
+        self.recent_files = []
+        self.recent_menu = None
 
         self.reading_settings = {
             'bg_color': '#1e1e2e',
@@ -420,6 +422,11 @@ class EPUBReader(QMainWindow):
         self.app_icon = create_app_icon()
         self.setWindowIcon(self.app_icon)
 
+        if self.recent_files:
+            last_file = self.recent_files[0]
+            if os.path.isfile(last_file):
+                QTimer.singleShot(100, lambda: self.load_epub(last_file))
+
     def load_settings(self):
         self.is_dark_theme = self.settings.value('is_dark_theme', True, type=bool)
         self.last_opened_dir = self.settings.value('last_opened_dir', '', type=str)
@@ -432,12 +439,19 @@ class EPUBReader(QMainWindow):
                 self.reading_settings = json.loads(rs)
             except (json.JSONDecodeError, TypeError):
                 pass
+        rf = self.settings.value('recent_files')
+        if rf:
+            try:
+                self.recent_files = json.loads(rf)
+            except (json.JSONDecodeError, TypeError):
+                self.recent_files = []
 
     def save_settings(self):
         self.settings.setValue('is_dark_theme', self.is_dark_theme)
         self.settings.setValue('last_opened_dir', self.last_opened_dir)
         self.settings.setValue('geometry', self.saveGeometry())
         self.settings.setValue('reading_settings', json.dumps(self.reading_settings))
+        self.settings.setValue('recent_files', json.dumps(self.recent_files))
         if self.book_file_path and self.current_chapter_index >= 0:
             self.settings.setValue(f'progress/{self.book_file_path}', self.current_chapter_index)
 
@@ -535,6 +549,16 @@ class EPUBReader(QMainWindow):
         open_action.setShortcut(QKeySequence('Ctrl+O'))
         open_action.triggered.connect(self.open_epub_file)
         file_menu.addAction(open_action)
+        add_file_action = QAction('添加到书架(&A)...', self)
+        add_file_action.triggered.connect(self.add_file_to_shelf)
+        file_menu.addAction(add_file_action)
+        file_menu.addSeparator()
+        self.recent_menu = file_menu.addMenu('最近打开(&R)')
+        self._rebuild_recent_menu()
+        file_menu.addSeparator()
+        clear_history = QAction('清除历史(&C)', self)
+        clear_history.triggered.connect(self.clear_recent_files)
+        file_menu.addAction(clear_history)
         file_menu.addSeparator()
         exit_action = QAction('退出(&X)', self)
         exit_action.setShortcut(QKeySequence('Alt+F4'))
@@ -781,6 +805,56 @@ class EPUBReader(QMainWindow):
             self.settings.remove(f'bookmarks/{self.book_file_path}')
         self.status_label.setText('已清除所有书签')
 
+    def add_file_to_shelf(self):
+        start_dir = self.last_opened_dir if self.last_opened_dir else ''
+        file_paths, _ = QFileDialog.getOpenFileNames(
+            self, '添加EPUB文件到书架', start_dir, 'EPUB文件 (*.epub);;所有文件 (*)'
+        )
+        for fp in file_paths:
+            if os.path.isfile(fp):
+                self._add_to_recent(fp)
+        if file_paths:
+            self.status_label.setText(f'已添加 {len(file_paths)} 个文件到书架')
+
+    def _add_to_recent(self, file_path):
+        file_path = os.path.abspath(file_path)
+        if file_path in self.recent_files:
+            self.recent_files.remove(file_path)
+        self.recent_files.insert(0, file_path)
+        self.recent_files = self.recent_files[:20]
+        self._rebuild_recent_menu()
+        self.save_settings()
+
+    def _rebuild_recent_menu(self):
+        if not self.recent_menu:
+            return
+        self.recent_menu.clear()
+        for i, fp in enumerate(self.recent_files):
+            if not os.path.isfile(fp):
+                continue
+            title = os.path.basename(fp)
+            action = QAction(f'{i + 1}. {title}', self)
+            action.setData(fp)
+            action.triggered.connect(self._open_recent_file)
+            self.recent_menu.addAction(action)
+        if self.recent_menu.isEmpty():
+            empty = QAction('(空)', self)
+            empty.setEnabled(False)
+            self.recent_menu.addAction(empty)
+
+    def _open_recent_file(self):
+        action = self.sender()
+        if action:
+            fp = action.data()
+            if fp and os.path.isfile(fp):
+                self.load_epub(fp)
+
+    def clear_recent_files(self):
+        self.recent_files = []
+        self._rebuild_recent_menu()
+        self.save_settings()
+        self.status_label.setText('已清除文件历史')
+
     def setup_shortcuts(self):
         QShortcut(QKeySequence('Escape'), self, self.exit_fullscreen)
 
@@ -918,6 +992,7 @@ class EPUBReader(QMainWindow):
             self.setWindowTitle(f'EPUB 阅读器 - {self.book_title}')
             self.status_label.setText(f'已加载: {self.book_title} | {len(self.chapters)} 章')
             self.load_bookmarks_for_book()
+            self._add_to_recent(file_path)
 
         except Exception as e:
             QMessageBox.critical(self, '错误', f'无法加载EPUB文件:\n{str(e)}')
