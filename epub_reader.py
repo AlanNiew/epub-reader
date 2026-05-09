@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                              QTabWidget, QDialog, QFormLayout, QColorDialog,
                              QFontDialog, QDialogButtonBox, QFrame, QCheckBox,
                              QScrollArea, QGridLayout, QSizePolicy, QLayout)
-from PyQt5.QtCore import Qt, QUrl, QSize, QTimer, QSettings, pyqtSignal
+from PyQt5.QtCore import Qt, QUrl, QSize, QTimer, QSettings, pyqtSignal, QRect
 from PyQt5.QtGui import (QFont, QIcon, QColor, QPalette, QKeySequence,
                           QPixmap, QPainter, QFontDatabase, QImage)
 from PyQt5.QtSvg import QSvgRenderer
