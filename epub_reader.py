@@ -129,12 +129,12 @@ def extract_epub_meta(file_path):
 
 STYLESHEET_DARK = """
 QMainWindow { background-color: #1e1e2e; }
-QWidget { background-color: #1e1e2e; color: #cdd6f4; font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif; }
-QMenuBar { background-color: #181825; color: #cdd6f4; border-bottom: 1px solid #313244; padding: 4px; font-size: 14px; }
+QWidget { background-color: #1e1e2e; color: #cdd6f4; font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif; font-size: 15px; }
+QMenuBar { background-color: #181825; color: #cdd6f4; border-bottom: 1px solid #313244; padding: 6px; font-size: 15px; }
 QMenuBar::item { padding: 6px 12px; border-radius: 4px; }
 QMenuBar::item:selected { background-color: #313244; }
 QMenuBar::item:pressed { background-color: #45475a; }
-QPushButton { background-color: #313244; color: #cdd6f4; border: 1px solid #45475a; border-radius: 6px; padding: 6px 14px; font-size: 13px; min-height: 20px; }
+QPushButton { background-color: #313244; color: #cdd6f4; border: 1px solid #45475a; border-radius: 6px; padding: 8px 16px; font-size: 14px; min-height: 24px; }
 QPushButton:hover { background-color: #45475a; border-color: #585b70; }
 QPushButton:pressed { background-color: #585b70; }
 QPushButton:disabled { background-color: #1e1e2e; color: #585b70; border-color: #313244; }
@@ -178,12 +178,12 @@ QCheckBox::indicator:checked { background-color: #89b4fa; border-color: #89b4fa;
 
 STYLESHEET_LIGHT = """
 QMainWindow { background-color: #eff1f5; }
-QWidget { background-color: #eff1f5; color: #4c4f69; font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif; }
-QMenuBar { background-color: #e6e9ef; color: #4c4f69; border-bottom: 1px solid #ccd0da; padding: 4px; font-size: 14px; }
+QWidget { background-color: #eff1f5; color: #4c4f69; font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif; font-size: 15px; }
+QMenuBar { background-color: #e6e9ef; color: #4c4f69; border-bottom: 1px solid #ccd0da; padding: 6px; font-size: 15px; }
 QMenuBar::item { padding: 6px 12px; border-radius: 4px; }
 QMenuBar::item:selected { background-color: #ccd0da; }
 QMenuBar::item:pressed { background-color: #bcc0cc; }
-QPushButton { background-color: #ccd0da; color: #4c4f69; border: 1px solid #bcc0cc; border-radius: 6px; padding: 6px 14px; font-size: 13px; min-height: 20px; }
+QPushButton { background-color: #ccd0da; color: #4c4f69; border: 1px solid #bcc0cc; border-radius: 6px; padding: 8px 16px; font-size: 14px; min-height: 24px; }
 QPushButton:hover { background-color: #bcc0cc; border-color: #acb0be; }
 QPushButton:pressed { background-color: #acb0be; }
 QPushButton:disabled { background-color: #eff1f5; color: #acb0be; border-color: #ccd0da; }
