@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                              QMenu, QStatusBar, QShortcut,
                              QTabWidget, QDialog, QFormLayout, QColorDialog,
                              QFontDialog, QDialogButtonBox, QFrame, QCheckBox,
-                             QScrollArea, QGridLayout, QSizePolicy)
+                             QScrollArea, QGridLayout, QSizePolicy, QLayout)
 from PyQt5.QtCore import Qt, QUrl, QSize, QTimer, QSettings, pyqtSignal
 from PyQt5.QtGui import (QFont, QIcon, QColor, QPalette, QKeySequence,
                           QPixmap, QPainter, QFontDatabase, QImage)
@@ -578,9 +578,6 @@ class QFlowLayout(QLayout):
             x += w + self._spacing
             line_h = max(line_h, h)
         return y + line_h - rect.y()
-
-
-from PyQt5.QtWidgets import QLayout, QRect
 
 
 class EPUBReader(QMainWindow):
